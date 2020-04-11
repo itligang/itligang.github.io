@@ -1,0 +1,73 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content=""><meta name="keywords" content="java,JVM,spring,mysql.redis,mq"><link rel="stylesheet" type="text/css" href="//fonts.loli.net/css?family=Source+Code+Pro"><link rel="stylesheet" type="text/css" href="/css/style.css?v=2.0.5"><link rel="stylesheet" type="text/css" href="/css/highlight.css?v=2.0.5"><link rel="Shortcut Icon" href="/favicon.ico"><link rel="bookmark" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><title>类加载过程 | 往者不可谏 来者犹可追</title><meta name="generator" content="Hexo 4.2.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">类加载过程</h1><a id="logo" href="/.">往者不可谏 来者犹可追</a><p class="description">Stay Hungry，Stay Foolish</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a></div><div id="search-form"><div id="result-mask" class="hide"></div><label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label><div id="result-wrap" class="hide"><div id="search-result"></div></div><div class="hide"><template id="search-tpl"><div class="item"><a href="/{path}" title="{title}"><div class="title">{title}</div><div class="time">{date}</div><div class="tags">{tags}</div></a></div></template></div></div></div><div id="layout" class="layout-g"><div class="layout-l"><div class="content_container"><div class="post"><h1 class="post-title">类加载过程</h1><div class="post-meta"><a href="/2020/03/30/jvm/%E7%B1%BB%E5%8A%A0%E8%BD%BD/%E7%B1%BB%E5%8A%A0%E8%BD%BD%E8%BF%87%E6%88%90/#comments" class="comment-count"></a><p><span class="date">Mar 30, 2020</span><span><i id="busuanzi_container_page_pv"><i id="busuanzi_value_page_pv"></i><i>点击</i></i></span></p></div><div class="post-content"><p>1、类加载 （Class Load）</p>
+<ul>
+<li><p>在Java代码中，类型的<strong>加载</strong>，<strong>连接</strong>与<strong>初始化</strong>过程都是在程序 <strong>运行期间(Runtime)</strong> 完成的</p>
+</li>
+<li><p>提供更大的灵活性、增加了更多的可能性</p>
+</li>
+<li><p>加载 .class 文件加载到内存</p>
+</li>
+<li><p>连接 类和类的关系处理好，.class 加载完成后处理</p>
+</li>
+<li><p>初始化 </p>
+</li>
+</ul>
+<p>2、类加载器深入剖析</p>
+<ul>
+<li>Java 虚拟机与程序的生命周期</li>
+<li>在如下几种情况下，Java虚拟机将结束生命周期<ul>
+<li>执行了 System.exit() 方法，</li>
+<li>程序正常执行结束</li>
+<li>程序在执行过程中遇到了异常或错误而异常终止</li>
+<li>由于操作系统出现错误而导致Java虚拟机进程终止</li>
+</ul>
+</li>
+</ul>
+<p>3、类的加载、连接与初始化</p>
+<ul>
+<li>加载：查找并加载类的二进制数据</li>
+<li>连接：<ul>
+<li>验证：去报被加载的类的正确性</li>
+<li>准备：为类的静态变量分配内存，并将其初始化为默认值</li>
+<li>解析：把类中的符号引用转换为直接引用</li>
+</ul>
+</li>
+<li>初始化: 为类的静态变量赋于正确的初始值</li>
+</ul>
+<p>4、类的使用和卸载</p>
+<ul>
+<li>使用</li>
+<li>卸载</li>
+</ul>
+<p>加载 =&gt; 连接（验证、准备、解析） =&gt; 初始化</p>
+<ul>
+<li><p>Java 对类的使用方式可以分为2种</p>
+<ul>
+<li>主动使用 （7种）<ul>
+<li>创建类的实例</li>
+<li>访问某个类或者接口的静态变量，或者对该静态变量赋值</li>
+<li>调用类的静态方法</li>
+<li>反射 （如 Class.forName(“”)）</li>
+<li>初始化一个类的子类</li>
+<li>Java 虚拟机启动时被标明为启动类的类（Java Test）</li>
+<li>JDK1.7 开始提供的动态语言支持<br>java.lang.invoke.MethodHandle实例的解析记过REF_getStatic,<br>REF_putStatic,REF_invokeStatic 句柄对应的类没有初始化，则初始化</li>
+</ul>
+</li>
+<li>注意：除了以上七种情况，其他使用Java类的方式被看作是对类的<strong>被动使用</strong>， 都不会导致类的初始化</li>
+</ul>
+</li>
+<li><p>被动使用</p>
+</li>
+<li><p>所有的Java虚拟机实现必须在每个类或接口被Java程序”首次主动使用” 时才会被加载</p>
+</li>
+<li><p>类的加载<br>类的加载，是指类的.class文件中的二进制数据读入到内存中，将其放在运行时数据区的<br>方法区内，然后在内存中创建一个java.lang.Class 对象（规范并未说明Class对象位于哪里，<br>HotSpot虚拟机将其放在了方法区中）用来封装类在方法区内的数据库结构</p>
+</li>
+<li><p>类的加载方式</p>
+<ul>
+<li>从本地系统中直接加载</li>
+<li>通过网络下载 .class文件</li>
+<li>从zip, jar等归档文件中加载 .class 文件</li>
+<li>从专有数据库中提取 .class文件</li>
+</ul>
+</li>
+</ul>
+</div><div class="post-copyright"><blockquote><p>原文作者: ligang</p><p>原文链接: <a href="http://yoursite.com/2020/03/30/jvm/类加载/类加载过成/">http://yoursite.com/2020/03/30/jvm/类加载/类加载过成/</a></p><p>版权声明: 转载请注明出处(必须保留原文作者署名原文链接)</p></blockquote></div><div class="tags"><a href="/tags/jvm/">jvm</a></div><div class="post-share"><div class="social-share"><span>分享到:</span></div></div><div class="post-nav"><a href="/2020/03/31/jvm/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/CMS%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/" class="pre">CMS收集器</a></div><div id="comments"></div></div></div></div><div class="layout-r"><div id="sidebar"><div class="search-pla"></div><div id="toc" class="widget"><div class="widget-title"><i class="fa fa-fei">文章目录</i></div></div><div class="widget"><div class="widget-title"><i class="fa fa-xie"> 最新文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2020/04/11/netty/netty/">netty</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/04/01/jvm/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/G1%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/">G1收集器</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/04/01/jvm/%E8%AF%8A%E6%96%AD/jvm%E8%AF%8A%E6%96%AD/">G1收集器</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/31/jvm/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/CMS%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/">CMS收集器</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/30/jvm/%E7%B1%BB%E5%8A%A0%E8%BD%BD/%E7%B1%BB%E5%8A%A0%E8%BD%BD%E8%BF%87%E6%88%90/">类加载过程</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-biao"> 标签</i></div><div class="tagcloud"><a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/netty/" style="font-size: 15px;">netty</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-archive"> 归档</i></div><ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">5</span></li></ul></div></div></div></div><a id="totop" href="#top"></a><div id="footer"><div class="footer-info"><p><a href="/baidusitemap.xml">网站地图</a> |  <a href="/atom.xml">订阅本站</a> |  <a href="/about/">联系博主</a></p><p>本站总访问量：<i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>次，本站总访客数:<i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>人</p><p><span> Copyright &copy;<a href="/." rel="nofollow">ligang.</a></span><span> Theme by<a rel="nofollow" target="_blank" href="https://github.com/chaooo/hexo-theme-BlueLake"> BlueLake.</a></span><span> Count by<a href="http://busuanzi.ibruce.info/" target="_blank" rel="noopener"> busuanzi.</a></span><span> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a></span></p></div></div></div><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><script type="text/javascript" src="/js/search.json.js?v=2.0.5"></script><div id="fullscreen-img" class="hide"><span class="close"></span></div><script type="text/javascript" src="/js/imgview.js?v=2.0.5" async></script><script type="text/javascript" src="/js/toctotop.js?v=2.0.5" async></script><link rel="stylesheet" type="text/css" href="/share/css/share.css"><script type="text/javascript" src="/share/js/social-share.js" charset="utf-8"></script><script type="text/javascript" src="/share/js/qrcode.js" charset="utf-8"></script></body></html>
